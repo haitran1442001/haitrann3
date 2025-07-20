@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Avatar GĐPT - Chèn ảnh vào khung</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f0f0f0;
+      padding: 20px;
+    }
+
+    canvas {
+      border-radius: 50%;
+      border: 3px solid #ccc;
+    }
+
+    input[type="file"] {
+      margin-top: 20px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>Chèn ảnh vào khung avatar GĐPT</h2>
+
+  <canvas id="avatarCanvas" width="512" height="512"></canvas><br>
+
+  <input type="file" id="uploadImage" accept="image/*">
+  <br>
+  <button onclick="downloadResult()">Tải ảnh về</button>
+
+  <script>
+    const canvas = document.getElementById('avatarCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const frameImg = new Image();
+    frameImg.src = 'Pastel Simple Birthday Facebook Profile Frame.png'; // Đặt đúng tên file
+
+    // Tự động vẽ khung khi tải xong
+    frameImg.onload = () => {
+      ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+    };
+
+    document.getElementById('uploadImage').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const userImg = new Image();
+        userImg.src = event.target.result;
+
+        userImg.onload = function() {
+          // Vẽ ảnh người dùng trước
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // Vẽ ảnh người dùng vào trung tâm (có thể chỉnh lại tuỳ theo layout)
+          ctx.drawImage(userImg, 64, 64, 384, 384); // ảnh sẽ nằm trong phần giữa
+
+          // Vẽ khung avatar đè lên
+          ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+        };
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function downloadResult() {
+      const link = document.createElement('a');
+      link.download = 'avatar_GDPT.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+  </script>
+</body>
+</html>
